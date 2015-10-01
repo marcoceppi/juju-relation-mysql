@@ -2,3 +2,4 @@
 .venv/
 .venv3/
 docs/build/
+__init__.py

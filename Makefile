@@ -1,6 +1,6 @@
 APT_PREREQS=python-dev python3-dev python-virtualenv
-PROJECT=mysql
-TESTS=tests/
+PROJECT=peer.py provides.py requires.py
+TESTS=test_provides.py
 
 .PHONY: all
 all:
@@ -12,6 +12,7 @@ all:
 .PHONY: clean
 clean:
 	find . -name '*.pyc' -delete
+	rm -f __init__.py
 	rm -rf .venv
 	rm -rf .venv3
 	rm -rf docs/_build
@@ -25,6 +26,7 @@ docclean:
 	@for i in $(APT_PREREQS); do dpkg -l | grep -w $$i >/dev/null || sudo apt-get install -y $$i; done
 	virtualenv .venv
 	.venv/bin/pip install -IUr test_requirements.txt
+	touch __init__.py
 
 .venv3:
 	@echo Processing apt package prereqs
@@ -47,12 +49,12 @@ test: lint test2 test3
 .PHONY: test2
 test2: .venv
 	@echo Starting Py2 tests...
-	.venv/bin/nosetests -s --nologcapture tests/
+	.venv/bin/nosetests -s --nologcapture $(TESTS)
 
 .PHONY: test3
 test3: .venv3
 	@echo Starting Py3 tests...
-	.venv3/bin/nosetests -s --nologcapture tests/
+	.venv3/bin/nosetests -s --nologcapture $(TESTS)
 
 .PHONY: docs
 docs: .venv
